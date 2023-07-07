@@ -40,11 +40,11 @@ public class GameObjectPool : MonoBehaviour
     public void ReturnObject(GameObject go)
     {
         go.SetActive(false);
-        stacks[go.GetComponent<Item>().type].Push(go);
+        stacks[go.GetComponent<Item>()._type].Push(go);
     }
     public void ReturnObject(Item it)
     {
         it.gameObject.SetActive(false);
-        stacks[it.type].Push(it.gameObject);
+        stacks[it._type].Push(it.gameObject);
     }
 }

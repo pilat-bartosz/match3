@@ -132,7 +132,7 @@ public class GridManager : MonoBehaviour
         {
             for (var j = 0; j < y; j++)
             {
-                if (actualTypeY != grid[i, j].type)
+                if (actualTypeY != grid[i, j]._type)
                 {
                     if (actualCountY >= 3)
                     {
@@ -145,7 +145,7 @@ public class GridManager : MonoBehaviour
                         }
                     }
 
-                    actualTypeY = grid[i, j].type;
+                    actualTypeY = grid[i, j]._type;
                     actualCountY = 1;
                 }
                 else
@@ -180,7 +180,7 @@ public class GridManager : MonoBehaviour
         {
             for (var j = 0; j < x; j++)
             {
-                if (actualTypeX != grid[j, i].type)
+                if (actualTypeX != grid[j, i]._type)
                 {
                     if (actualCountX >= 3)
                     {
@@ -193,7 +193,7 @@ public class GridManager : MonoBehaviour
                         }
                     }
 
-                    actualTypeX = grid[j, i].type;
+                    actualTypeX = grid[j, i]._type;
                     actualCountX = 1;
                 }
                 else
@@ -228,7 +228,7 @@ public class GridManager : MonoBehaviour
             {
                 pos.Add(CoordinatesOf(grid, itemsChecked[i]));
                 pool.ReturnObject(itemsChecked[i]);
-                om.AddProgress(itemsChecked[i].type, 1);
+                om.AddProgress(itemsChecked[i]._type, 1);
             }
 
             itemsChecked.Clear();
@@ -318,21 +318,21 @@ public class GridManager : MonoBehaviour
         {
             for (var j = 0; j < y; j++)
             {
-                actualType = grid[i, j].type;
-                if (j + 1 < y && grid[i, j + 1].type == actualType) // *XX* case
+                actualType = grid[i, j]._type;
+                if (j + 1 < y && grid[i, j + 1]._type == actualType) // *XX* case
                 {
-                    if (j - 2 >= 0 && grid[i, j - 2].type == actualType) return true;
-                    if (i + 1 < x && j - 1 >= 0 && grid[i + 1, j - 1].type == actualType) return true;
-                    if (i - 1 >= 0 && j - 1 >= 0 && grid[i - 1, j - 1].type == actualType) return true;
+                    if (j - 2 >= 0 && grid[i, j - 2]._type == actualType) return true;
+                    if (i + 1 < x && j - 1 >= 0 && grid[i + 1, j - 1]._type == actualType) return true;
+                    if (i - 1 >= 0 && j - 1 >= 0 && grid[i - 1, j - 1]._type == actualType) return true;
 
-                    if (j + 3 < y && grid[i, j + 3].type == actualType) return true;
-                    if (i + 1 < x && j + 2 < y && grid[i + 1, j + 2].type == actualType) return true;
-                    if (i - 1 >= 0 && j + 2 < y && grid[i - 1, j + 2].type == actualType) return true;
+                    if (j + 3 < y && grid[i, j + 3]._type == actualType) return true;
+                    if (i + 1 < x && j + 2 < y && grid[i + 1, j + 2]._type == actualType) return true;
+                    if (i - 1 >= 0 && j + 2 < y && grid[i - 1, j + 2]._type == actualType) return true;
                 }
-                else if (j + 2 < y && grid[i, j + 2].type == actualType) // X*X case
+                else if (j + 2 < y && grid[i, j + 2]._type == actualType) // X*X case
                 {
-                    if ((i - 1 >= 0 && j + 1 < y && grid[i - 1, j + 1].type == actualType) ||
-                        (i + 1 < x && j + 1 < y && grid[i + 1, j + 1].type == actualType))
+                    if ((i - 1 >= 0 && j + 1 < y && grid[i - 1, j + 1]._type == actualType) ||
+                        (i + 1 < x && j + 1 < y && grid[i + 1, j + 1]._type == actualType))
                         return true;
                 }
             }
@@ -343,21 +343,21 @@ public class GridManager : MonoBehaviour
         {
             for (var j = 0; j < x; j++)
             {
-                actualType = grid[j, i].type;
-                if (j + 1 < x && grid[j + 1, i].type == actualType) // *XX* case
+                actualType = grid[j, i]._type;
+                if (j + 1 < x && grid[j + 1, i]._type == actualType) // *XX* case
                 {
-                    if (j - 2 >= 0 && grid[j - 2, i].type == actualType) return true;
-                    if (j - 1 >= 0 && i - 1 >= 0 && grid[j - 1, i - 1].type == actualType) return true;
-                    if (j - 1 >= 0 && i + 1 < y && grid[j - 1, i + 1].type == actualType) return true;
+                    if (j - 2 >= 0 && grid[j - 2, i]._type == actualType) return true;
+                    if (j - 1 >= 0 && i - 1 >= 0 && grid[j - 1, i - 1]._type == actualType) return true;
+                    if (j - 1 >= 0 && i + 1 < y && grid[j - 1, i + 1]._type == actualType) return true;
 
-                    if (j + 3 < x && grid[j + 3, i].type == actualType) return true;
-                    if (j + 2 < x && i - 1 >= 0 && grid[j + 2, i - 1].type == actualType) return true;
-                    if (j + 2 < x && i + 1 < y && grid[j + 2, i + 1].type == actualType) return true;
+                    if (j + 3 < x && grid[j + 3, i]._type == actualType) return true;
+                    if (j + 2 < x && i - 1 >= 0 && grid[j + 2, i - 1]._type == actualType) return true;
+                    if (j + 2 < x && i + 1 < y && grid[j + 2, i + 1]._type == actualType) return true;
                 }
-                else if (j + 2 < x && grid[j + 2, i].type == actualType) // X*X case
+                else if (j + 2 < x && grid[j + 2, i]._type == actualType) // X*X case
                 {
-                    if ((j + 1 < x && i - 1 >= 0 && grid[j + 1, i - 1].type == actualType) ||
-                        (j + 1 < x && i + 1 < y && grid[j + 1, i + 1].type == actualType))
+                    if ((j + 1 < x && i - 1 >= 0 && grid[j + 1, i - 1]._type == actualType) ||
+                        (j + 1 < x && i + 1 < y && grid[j + 1, i + 1]._type == actualType))
                         return true;
                 }
             }
