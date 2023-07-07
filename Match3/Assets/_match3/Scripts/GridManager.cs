@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
+using Unity.Mathematics;
+using Random = UnityEngine.Random;
 
 public class GridManager : MonoBehaviour
 {
@@ -9,6 +12,7 @@ public class GridManager : MonoBehaviour
 
     public Vector2 startPosition;
     public Vector2 gap;
+
     public int sizeX;
     public int sizeY;
 
@@ -19,7 +23,6 @@ public class GridManager : MonoBehaviour
     {
         grid = new Item[sizeX, sizeY];
         itemsChecked = new List<Item>();
-        
     }
 
     void Update()
@@ -28,14 +31,16 @@ public class GridManager : MonoBehaviour
         {
             TakeTurn();
         }
+
         if (Input.GetKeyDown(KeyCode.X))
         {
             SuffleGrid();
         }
+
         if (Input.GetKeyDown(KeyCode.C))
         {
-            bool tmp = HaveAnotherMove();
-            Debug.Log("There is more moves: "+tmp);
+            var tmp = HaveAnotherMove();
+            Debug.Log("There is more moves: " + tmp);
         }
     }
 
@@ -56,88 +61,90 @@ public class GridManager : MonoBehaviour
     public bool TakeTurn()
     {
         Debug.Log("Turn");
-        int ret=0;
+        var ret = 0;
         do
         {
             CheckGridVertical(sizeX, sizeY); //Vertical
             CheckGridHorisontal(sizeX, sizeY); //Horisontal
             ret++;
         } while (DestroyMatch());
+
         //Debug.Log("Take turn "+ret);
-        return ret == 1 ? true : false;     
+        return ret == 1 ? true : false;
     }
+
     public void SuffleGrid()
     {
         Debug.Log("SuffleGrid");
         ClearGrid();
         InstantiateRandomGrid();
     }
+
     public bool CheckIfNeighbors(Item i1, Item i2)
     {
-        Pair<int, int> p1 = CoordinatesOf<Item>(grid, i1);
-        Pair<int, int> p2 = CoordinatesOf<Item>(grid, i2);
+        var p1 = CoordinatesOf(grid, i1);
+        var p2 = CoordinatesOf(grid, i2);
 
-        if (Mathf.Abs(p1.First - p2.First) + Mathf.Abs(p1.Second - p2.Second) == 1)
-            return true;
-
-        return false;
+        return math.abs(p1.x - p2.x) + math.abs(p1.y - p2.y) == 1;
     }
+
     public void SwitchPositions(Item i1, Item i2)
     {
-        Pair<int, int> p1 = CoordinatesOf<Item>(grid, i1);
-        Pair<int, int> p2 = CoordinatesOf<Item>(grid, i2);
-        Item tmp = grid[p1.First, p1.Second];
-        grid[p1.First, p1.Second] = grid[p2.First, p2.Second];
-        grid[p2.First, p2.Second] = tmp;
+        var p1 = CoordinatesOf(grid, i1);
+        var p2 = CoordinatesOf(grid, i2);
+        (grid[p1.x, p1.y], grid[p2.x, p2.y]) = (grid[p2.x, p2.y], grid[p1.x, p1.y]);
     }
 
     void InstantiateRandomGrid()
     {
-        for (int i = 0; i < sizeX; i++)
+        for (var i = 0; i < sizeX; i++)
         {
-            for (int j = 0; j < sizeY; j++)
+            for (var j = 0; j < sizeY; j++)
             {
-                GameObject go = GetRandomItem();
+                var go = GetRandomItem();
                 go.SetActive(true);
-                go.GetComponent<Item>().InstantiateAtPosition(new Vector2(startPosition.x + (gap.x * i), startPosition.y - (gap.y * j)));
+                go.GetComponent<Item>()
+                    .TeleportToPosition(new Vector2(startPosition.x + (gap.x * i), startPosition.y - (gap.y * j)));
                 grid[i, j] = go.GetComponent<Item>();
                 //Debug.Log("Tag - " + (Item)System.Enum.Parse(typeof(ItemTag), go.tag));
                 //grid[j, i] = (ItemTag)System.Enum.Parse(typeof(ItemTag), go.tag);
             }
         }
     }
+
     void ClearGrid()
     {
-        for (int i = 0; i < sizeX; i++)
+        for (var i = 0; i < sizeX; i++)
         {
-            for (int j = 0; j < sizeY; j++)
+            for (var j = 0; j < sizeY; j++)
             {
                 pool.ReturnObject(grid[i, j].gameObject);
             }
         }
     }
-  
+
     void CheckGridVertical(int x, int y)
     {
         //Debug.Log("Checking Vertical");
-        int actualTypeY = -1;
-        int actualCountY = -1;
-        for (int i = 0; i < x; i++)
+        var actualTypeY = -1;
+        var actualCountY = -1;
+        for (var i = 0; i < x; i++)
         {
-            for (int j = 0; j < y; j++)
+            for (var j = 0; j < y; j++)
             {
                 if (actualTypeY != grid[i, j].type)
                 {
                     if (actualCountY >= 3)
                     {
                         Debug.Log("Match count:" + actualCountY + " of type: " + actualTypeY);
-                        for (int f = 0; f < actualCountY; f++)
+                        for (var f = 0; f < actualCountY; f++)
                         {
-                            if(!itemsChecked.Contains(grid[i, j - 1 - f]))
-                                itemsChecked.Add(grid[i, j-1 - f]);
+                            if (!itemsChecked.Contains(grid[i, j - 1 - f]))
+                                itemsChecked.Add(grid[i, j - 1 - f]);
                             //Debug.Log("Pos " + i + " " + (j-1 - f));
                         }
                     }
+
                     actualTypeY = grid[i, j].type;
                     actualCountY = 1;
                 }
@@ -147,41 +154,45 @@ public class GridManager : MonoBehaviour
                 }
                 //Debug.Log(i + " | " + j);
             }
+
             if (actualCountY >= 3)
             {
                 Debug.Log("Match count:" + actualCountY + " of type: " + actualTypeY);
-                for (int f = 0; f < actualCountY; f++)
+                for (var f = 0; f < actualCountY; f++)
                 {
                     if (!itemsChecked.Contains(grid[i, y - 1 - f]))
                         itemsChecked.Add(grid[i, y - 1 - f]);
                     //Debug.Log("Pos " + i + " " + (y - 1 - f));
                 }
             }
+
             actualTypeY = -1;
             actualCountY = -1;
         }
     }
+
     void CheckGridHorisontal(int x, int y)
     {
         //Debug.Log("Checking Horisontal");
-        int actualTypeX = -1;
-        int actualCountX = -1;
-        for (int i = 0; i < y; i++)
+        var actualTypeX = -1;
+        var actualCountX = -1;
+        for (var i = 0; i < y; i++)
         {
-            for (int j = 0; j < x; j++)
+            for (var j = 0; j < x; j++)
             {
                 if (actualTypeX != grid[j, i].type)
                 {
                     if (actualCountX >= 3)
                     {
                         Debug.Log("Match count:" + actualCountX + " of type: " + actualTypeX);
-                        for (int f = 0; f < actualCountX; f++)
+                        for (var f = 0; f < actualCountX; f++)
                         {
                             if (!itemsChecked.Contains(grid[j - 1 - f, i]))
-                                itemsChecked.Add(grid[j -1 - f, i]);
+                                itemsChecked.Add(grid[j - 1 - f, i]);
                             //Debug.Log("Pos " + (j-1 - f) + " " + i);
                         }
                     }
+
                     actualTypeX = grid[j, i].type;
                     actualCountX = 1;
                 }
@@ -191,16 +202,18 @@ public class GridManager : MonoBehaviour
                 }
                 //Debug.Log(i + " | " + j);
             }
+
             if (actualCountX >= 3)
             {
                 Debug.Log("Match count:" + actualCountX + " of type: " + actualTypeX);
-                for (int f = 0; f < actualCountX; f++)
+                for (var f = 0; f < actualCountX; f++)
                 {
                     if (!itemsChecked.Contains(grid[x - 1 - f, i]))
                         itemsChecked.Add(grid[x - 1 - f, i]);
                     //Debug.Log("Pos " + (x - 1 - f) + " " + i);
                 }
             }
+
             actualTypeX = -1;
             actualCountX = -1;
         }
@@ -210,55 +223,83 @@ public class GridManager : MonoBehaviour
     {
         if (itemsChecked.Count > 0)
         {
-            List<Pair<int, int>> pos = new List<Pair<int, int>>();
-            for (int i = 0; i < itemsChecked.Count; i++)
+            var pos = new List<int2>();
+            for (var i = 0; i < itemsChecked.Count; i++)
             {
+                pos.Add(CoordinatesOf(grid, itemsChecked[i]));
                 pool.ReturnObject(itemsChecked[i]);
                 om.AddProgress(itemsChecked[i].type, 1);
-                pos.Add(CoordinatesOf<Item>(grid, itemsChecked[i]));
-            }
-            itemsChecked.Clear();
-            foreach (Pair<int, int> p in pos)
-            {
-                grid[p.First, p.Second] = null;
             }
 
-            MoveItemsDown();
+            itemsChecked.Clear();
+            foreach (var p in pos)
+            {
+                grid[p.x, p.y] = null;
+            }
+
+            bool wasMoved;
+            do
+            {
+                wasMoved = MoveItemsDown();
+            } while (wasMoved);
+
             return true;
         }
         else return false;
     }
 
-    void MoveItemsDown()
+    private bool MoveItemsDown()
     {
-        for (int i = 0; i < sizeX; i++)
+        var wasSomethingMoved = false;
+        for (var i = 0; i < sizeX; i++)
         {
-            for (int j = 0; j < sizeY; j++)
+            //check by the columns
+            for (var j = 0; j < sizeY; j++)
             {
-                if(!grid[i, j])
+                if (!grid[i, j])
                 {
-                    MoveItemDown(i,j);
-                }    
+                    MoveItemDownTo(i, j);
+
+                    wasSomethingMoved = true;
+                }
             }
         }
+
+        return wasSomethingMoved;
     }
-    void MoveItemDown(int x, int y)
+
+    private Vector3 GetPositionFromGrid(int2 gridPosition)
     {
+        return GetPositionFromGrid(gridPosition.x, gridPosition.y);
+    }
+    
+    private Vector3 GetPositionFromGrid(int x, int y)
+    {
+        return new Vector3(startPosition.x + gap.x * x, startPosition.y - gap.y * y,0);
+    }
+
+    void MoveItemDownTo(int x, int y)
+    {
+        //position is at the top so spawn new item
         if (y == 0)
         {
-            GameObject go = GetRandomItem();
+            var go = GetRandomItem();
             go.SetActive(true);
-            go.GetComponent<Item>().InstantiateAtPosition(new Vector2(startPosition.x + (gap.x * x), startPosition.y - (gap.y * (y-1))));
-            go.GetComponent<Item>().MoveDown();
-            grid[x, y] = go.GetComponent<Item>();
+            var item = go.GetComponent<Item>();
+            item.TeleportToPosition(GetPositionFromGrid(x,y-1));
+            item.MoveAtPosition(GetPositionFromGrid(x,y));
+            grid[x, y] = item;
         }
         else
         {
-            grid[x, y] = grid[x, y - 1];
-            grid[x, y - 1] = null;
-            grid[x, y].MoveDown();
-            MoveItemDown(x, y - 1);
+            if (grid[x, y - 1] != null)
+            {
+                grid[x, y] = grid[x, y - 1];
+                grid[x, y - 1] = null;
+                grid[x, y].MoveAtPosition(GetPositionFromGrid(x,y));
+            }
         }
+        //MoveItemDownTo(x, y - 1);
     }
 
     GameObject GetRandomItem()
@@ -268,14 +309,14 @@ public class GridManager : MonoBehaviour
 
     public bool HaveAnotherMove()
     {
-        int x = sizeX;
-        int y = sizeY;
+        var x = sizeX;
+        var y = sizeY;
 
-        int actualType = 0 ;
+        var actualType = 0;
         //vertical
-        for (int i = 0; i < x; i++) 
+        for (var i = 0; i < x; i++)
         {
-            for (int j = 0; j < y; j++)
+            for (var j = 0; j < y; j++)
             {
                 actualType = grid[i, j].type;
                 if (j + 1 < y && grid[i, j + 1].type == actualType) // *XX* case
@@ -296,10 +337,11 @@ public class GridManager : MonoBehaviour
                 }
             }
         }
+
         //horisontal
-        for (int i = 0; i < y; i++)
+        for (var i = 0; i < y; i++)
         {
-            for (int j = 0; j < x; j++)
+            for (var j = 0; j < x; j++)
             {
                 actualType = grid[j, i].type;
                 if (j + 1 < x && grid[j + 1, i].type == actualType) // *XX* case
@@ -311,7 +353,6 @@ public class GridManager : MonoBehaviour
                     if (j + 3 < x && grid[j + 3, i].type == actualType) return true;
                     if (j + 2 < x && i - 1 >= 0 && grid[j + 2, i - 1].type == actualType) return true;
                     if (j + 2 < x && i + 1 < y && grid[j + 2, i + 1].type == actualType) return true;
-
                 }
                 else if (j + 2 < x && grid[j + 2, i].type == actualType) // X*X case
                 {
@@ -320,22 +361,22 @@ public class GridManager : MonoBehaviour
                         return true;
                 }
             }
-
         }
+
         return false;
     }
 
-    public Pair<int,int> CoordinatesOf<T>(T[,] matrix, T value)
+    public int2 CoordinatesOf<T>(T[,] matrix, T value)
     {
-        for (int x = 0; x < matrix.GetLength(0); ++x)
+        for (var x = 0; x < matrix.GetLength(0); ++x)
         {
-            for (int y = 0; y < matrix.GetLength(1); ++y)
+            for (var y = 0; y < matrix.GetLength(1); ++y)
             {
                 if (matrix[x, y].Equals(value))
-                    return new Pair<int, int>(x, y);
+                    return new int2(x, y);
             }
         }
 
-        return new Pair<int, int>(-1, -1);
+        return new int2(-1, -1);
     }
 }
