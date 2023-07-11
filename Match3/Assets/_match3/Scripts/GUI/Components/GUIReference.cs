@@ -5,6 +5,6 @@ namespace _match3.GUI
 {
     public class GUIReference : ICleanupComponentData
     {
-        public GameObject guiReference;
+        public GUIManager guiReference;
     }
 }

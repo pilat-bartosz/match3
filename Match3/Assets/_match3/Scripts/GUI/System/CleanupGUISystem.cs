@@ -23,7 +23,7 @@ namespace _match3.GUI
             var guiReferenceEntity = _cleanupQuery.GetSingletonEntity();
             var guiReference = _cleanupQuery.GetSingleton<GUIReference>();
 
-            Object.Destroy(guiReference.guiReference);
+            Object.Destroy(guiReference.guiReference.gameObject);
             EntityManager.RemoveComponent<GUIReference>(guiReferenceEntity);
         }
     }

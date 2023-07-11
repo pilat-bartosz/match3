@@ -1,3 +1,4 @@
+using _match3.Game;
 using Unity.Entities;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ namespace _match3.GUI
         protected override void OnCreate()
         {
             _instantiateQuery = SystemAPI.QueryBuilder()
-                .WithAll<GUIPrefab>()
+                .WithAll<GUIPrefab, GameStateSingleton>()
                 .WithNone<GUIManager, GUIReference>()
                 .Build();
 
@@ -22,12 +23,18 @@ namespace _match3.GUI
         {
             var guiPrefabEntity = _instantiateQuery.GetSingletonEntity();
             var guiPrefab = _instantiateQuery.GetSingleton<GUIPrefab>();
+            var gameStateSingleton = _instantiateQuery.GetSingleton<GameStateSingleton>();
 
             var guiObject = Object.Instantiate(guiPrefab.guiPrefab);
-            EntityManager.AddComponentObject(guiPrefabEntity, guiObject);
+            var guiManager = guiObject.GetComponent<GUIManager>();
+            
+            guiManager.Initialize();
+            guiManager.SwitchToUI(gameStateSingleton.gameState);
+            
+            EntityManager.AddComponentObject(guiPrefabEntity, guiManager);
             EntityManager.AddComponentObject(guiPrefabEntity, new GUIReference
             {
-                guiReference = guiObject
+                guiReference = guiManager
             });
         }
     }

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -8,9 +7,7 @@ public class GameManager : MonoBehaviour
     public GridManager gridManager;
     public ObjectiveManager objectiveManager;
 
-    public GameObject GameUI;
-    public GameObject MenuUI;
-    public GameObject CongratulationsUI;
+   
 
     Item actualItem;
 
@@ -103,7 +100,7 @@ public class GameManager : MonoBehaviour
         objectiveManager.Initialize(toDoArray);
         gridManager.StartGame();
         objectiveManager.StartGame();
-        ShowGameUI();
+        //ShowGameUI();
     }
     void EndGame()
     {
@@ -114,28 +111,19 @@ public class GameManager : MonoBehaviour
     public void Congrats()
     {
         ToggleCongratulationsUI();
-        ShowMenuUI();
+        //ShowMenuUI();
     }
 
     void ToggleCongratulationsUI()
     {
-        Debug.Log(!CongratulationsUI.activeInHierarchy);
-        CongratulationsUI.SetActive(!CongratulationsUI.activeInHierarchy);
+        //Debug.Log(!CongratulationsUI.activeInHierarchy);
+        //CongratulationsUI.SetActive(!CongratulationsUI.activeInHierarchy);
     }
     public void ToMenu()
     {
         objectiveManager.EndGame();
         gridManager.EndGame();
-        ShowMenuUI();
+        //ShowMenuUI();
     }
-    void ShowGameUI()
-    {
-        MenuUI.SetActive(false);
-        GameUI.SetActive(true);
-    }
-    void ShowMenuUI()
-    {
-        GameUI.SetActive(false);
-        MenuUI.SetActive(true);
-    }
+    
 }

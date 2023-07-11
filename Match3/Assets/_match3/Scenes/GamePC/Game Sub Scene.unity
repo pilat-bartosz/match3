@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4511f29826254405b8c1f252f4c0d7ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jellyTypeCount: 6
   menuPrefab: {fileID: 8431414180861567244, guid: e3505db6fcd987948831318f139af23c,
     type: 3}
 --- !u!4 &24876910

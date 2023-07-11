@@ -674,19 +674,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 860301738124862678}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7411275072273787530}
-        m_TargetAssemblyTypeName: GUIManager, Assembly-CSharp
-        m_MethodName: MenuButtonClicked
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &1977677482940728280
 GameObject:
   m_ObjectHideFlags: 0
@@ -1249,19 +1237,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8516752731115192135}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7411275072273787530}
-        m_TargetAssemblyTypeName: GUIManager, Assembly-CSharp
-        m_MethodName: MenuButtonClicked
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 3
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &2935480845771573372
 GameObject:
   m_ObjectHideFlags: 0
@@ -1510,7 +1486,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1725298065104146579
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1906,19 +1882,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4121399472544812647}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7411275072273787530}
-        m_TargetAssemblyTypeName: GUIManager, Assembly-CSharp
-        m_MethodName: MenuButtonClicked
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &5073330918758240467
 GameObject:
   m_ObjectHideFlags: 0
@@ -2192,19 +2156,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6442710638105360686}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7411275072273787530}
-        m_TargetAssemblyTypeName: GUIManager, Assembly-CSharp
-        m_MethodName: MenuButtonClicked
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 2
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &5619833344444709614
 GameObject:
   m_ObjectHideFlags: 0
@@ -3044,7 +2996,7 @@ RectTransform:
   - {fileID: 1725298065104146579}
   - {fileID: 4803765124130612920}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3126,9 +3078,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd2fc48ec9542fd47979df3cc215b90c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MenuUI: {fileID: 3788967787613614313}
-  GameUI: {fileID: 4778057132641238200}
-  CongratulationsUI: {fileID: 6928001585463356736}
+  _menuUI: {fileID: 3788967787613614313}
+  _menuButtons:
+  - {fileID: 4938368149125911298}
+  - {fileID: 4085229207075808700}
+  - {fileID: 4147701188219661886}
+  - {fileID: 1729980966572615175}
+  _gameUI: {fileID: 4778057132641238200}
+  _scoreImages:
+  - {fileID: 1782378594229477486}
+  - {fileID: 6907894683726008862}
+  - {fileID: 5749390503669941814}
+  - {fileID: 6663174585248643771}
+  - {fileID: 4957016273703543549}
+  - {fileID: 1875531859410549770}
+  _congratulationsUI: {fileID: 6928001585463356736}
 --- !u!1 &8551630654358411225
 GameObject:
   m_ObjectHideFlags: 0
