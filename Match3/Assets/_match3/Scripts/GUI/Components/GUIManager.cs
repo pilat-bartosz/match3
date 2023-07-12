@@ -50,6 +50,10 @@ namespace _match3.GUI
             Debug.Log("Screen width - " + Camera.main.pixelWidth);
             var canvasScaler = GetComponentInChildren<CanvasScaler>();
             canvasScaler.matchWidthOrHeight = 1 - (float)Camera.main.pixelWidth / 1280;
+            
+            var canvas = GetComponentInChildren<Canvas>();
+            canvas.worldCamera = Camera.main;
+            canvas.planeDistance = 11f;
         }
     
         public void SwitchToUI(GameState uiState, bool activeState = true)
