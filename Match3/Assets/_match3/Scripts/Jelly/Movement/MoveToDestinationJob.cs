@@ -6,7 +6,6 @@ using Unity.Transforms;
 namespace _match3.Jelly.Movement
 {
     [BurstCompile]
-    [WithChangeFilter(typeof(Destination))]
     public partial struct MoveToDestinationJob : IJobEntity
     {
         [ReadOnly] public float deltaTime;

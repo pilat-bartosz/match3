@@ -83,15 +83,16 @@ namespace _match3.Game
                         startPosition.y - (gap.y * y),
                         0f
                     );
+                    state.EntityManager.SetComponentData(entity, new Destination
+                    {
+                        position = newPosition
+                    });
+                    newPosition += new float3(0f,gap.y * 2, 0f);
                     state.EntityManager.SetComponentData(entity, new LocalTransform
                     {
                         Position = newPosition,
                         Rotation = quaternion.identity,
                         Scale = 0.75f
-                    });
-                    state.EntityManager.SetComponentData(entity, new Destination
-                    {
-                        position = newPosition
                     });
 
                     //setup grid position
