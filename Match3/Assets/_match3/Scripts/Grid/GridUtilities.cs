@@ -6,6 +6,16 @@ namespace _match3.Grid
     public static class GridUtilities
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool CheckBoundaries(this GridSettingsSingleton gridSettings, int2 gridPosition)
+        {
+            return gridPosition.x >= 0
+                   && gridPosition.x < gridSettings.size.x
+                   && gridPosition.y >= 0
+                   && gridPosition.y < gridSettings.size.y;
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetIndexFromSettings(this GridSettingsSingleton gridSettings, int2 gridPosition)
         {
             return GetIndexFromSettings(gridSettings, gridPosition.x, gridPosition.y);
@@ -26,7 +36,7 @@ namespace _match3.Grid
                 y = math.abs(position.y - gridSettings.startPosition.y)
             };
             pos += gridSettings.gap / 2;
-            var gridPosition = new int2(pos / gridSettings.gap);
+            var gridPosition = new int2(math.floor(pos / gridSettings.gap));
             return gridPosition;
         }
 

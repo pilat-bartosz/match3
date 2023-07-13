@@ -37,8 +37,10 @@ namespace _match3.Selection
             {
                 var mouseGridPosition = GridUtilities
                     .GetGridPositionFromPosition(inputData.mouseWorldPosition, gridSettings);
-                var entity = grid[gridSettings.GetIndexFromSettings(mouseGridPosition)].entity;
 
+                if (!gridSettings.CheckBoundaries(mouseGridPosition)) return;
+                
+                var entity = grid[gridSettings.GetIndexFromSettings(mouseGridPosition)].entity;
                 //Switch selection
                 if (selection.ValueRO.currentSelectedEntity != Entity.Null)
                 {
