@@ -47,7 +47,6 @@ namespace _match3.GUI
 
         public void FixCanvasScaleToFitResolution()
         {
-            Debug.Log("Screen width - " + Camera.main.pixelWidth);
             var canvasScaler = GetComponentInChildren<CanvasScaler>();
             canvasScaler.matchWidthOrHeight = 1 - (float)Camera.main.pixelWidth / 1280;
             
@@ -58,7 +57,6 @@ namespace _match3.GUI
     
         public void SwitchToUI(GameState uiState, bool activeState = true)
         {
-            Log.Debug($"SwitchToUI {uiState}");
             _menuUI.SetActive(activeState && uiState == GameState.Menu);
             _gameUI.SetActive(activeState && uiState == GameState.Game);
             _congratulationsUI.SetActive(activeState && uiState == GameState.Congratulations);
@@ -75,7 +73,6 @@ namespace _match3.GUI
         private void MenuButtonClicked(int buttonID)
         {
             SetMenuButtons(buttonID, true, false);
-            Log.Debug($"Menu Button Clicked {buttonID}");
         }
         
         public bool BeginMenuButtonHandling()

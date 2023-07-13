@@ -43,8 +43,6 @@ namespace _match3.GUI
                 scoreBuffer.Add(new GameScoreTargetBuffer { score = endValue });
                     
                 guiManager.EndMenuButtonHandling();
-                    
-                Log.Debug($"ScoreTarget {endValue}");
             }
         }
     }
