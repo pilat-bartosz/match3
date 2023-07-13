@@ -100,5 +100,5 @@ MonoBehaviour:
   type: 3
   movementSpeed: 5
   animationSpeed: 1
-  minScale: 1
-  maxScale: 1.5
+  minScale: 0.75
+  maxScale: 1
