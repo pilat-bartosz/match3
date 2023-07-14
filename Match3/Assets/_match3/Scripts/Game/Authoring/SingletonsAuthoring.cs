@@ -70,13 +70,17 @@ namespace _match3.Managers
                 {
                     guiPrefab = authoring.menuPrefab
                 });
-
+                
+                
                 //Game Score
-                var buffer = AddBuffer<GameScoreBuffer>(entity);
+                var storeBuffer = AddBuffer<GameScoreBuffer>(entity);
+                var scoreTargetBuffer = AddBuffer<GameScoreTargetBuffer>(entity);
                 for (var i = 0; i < authoring.jellyTypeCount; i++)
                 {
-                    buffer.Add(new GameScoreBuffer());
+                    storeBuffer.Add(new GameScoreBuffer());
+                    scoreTargetBuffer.Add(new GameScoreTargetBuffer());
                 }
+                
                 
                 //Grid
                 AddComponent(entity, new GridSettingsSingleton

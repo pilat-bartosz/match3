@@ -73,8 +73,7 @@ namespace _match3.Game
                     var type = random.ValueRW.random.NextInt(0, jellyTypeCount);
                     state.EntityManager.SetComponentData(entity, new Jelly.Jelly
                     {
-                        type = type,
-                        spriteSize = 0.1665039f //TODO move sprite size to another component
+                        type = type
                     });
 
                     //teleport to
