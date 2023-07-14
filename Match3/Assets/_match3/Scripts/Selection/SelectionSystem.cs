@@ -1,9 +1,9 @@
 using _match3.Game;
 using _match3.Grid;
 using _match3.Input;
-using _match3.Jelly.Animations;
 using Unity.Burst;
 using Unity.Entities;
+using Unity.Mathematics;
 
 namespace _match3.Selection
 {
@@ -20,8 +20,7 @@ namespace _match3.Selection
             state.RequireForUpdate<SelectionSingleton>();
         }
 
-        [BurstDiscard]
-        //[BurstCompile]
+        [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
             var gameState = SystemAPI.GetSingleton<GameStateSingleton>();
@@ -41,14 +40,25 @@ namespace _match3.Selection
                 if (!gridSettings.CheckBoundaries(mouseGridPosition)) return;
                 
                 var entity = grid[gridSettings.GetIndexFromSettings(mouseGridPosition)].entity;
-                //Switch selection
+                
+                //Deselect old
                 if (selection.ValueRO.currentSelectedEntity != Entity.Null)
                 {
-                    state.EntityManager.SetComponentEnabled<IsAnimated>(selection.ValueRO.currentSelectedEntity, false);
+                    //check if new is neighbour of selected
+                    var dif = math.abs(selection.ValueRO.selectionPosition - mouseGridPosition);
+                    if (dif.x + dif.y == 1)
+                    {
+                        //switch positions
+                    }
+                    
+                    //stop animation
+                    state.EntityManager.SetComponentEnabled<IsSelected>(selection.ValueRO.currentSelectedEntity, false);
                 }
 
-                state.EntityManager.SetComponentEnabled<IsAnimated>(entity, true);
+                //Select new
+                state.EntityManager.SetComponentEnabled<IsSelected>(entity, true);
                 selection.ValueRW.currentSelectedEntity = entity;
+                selection.ValueRW.selectionPosition = mouseGridPosition;
             }
         }
 

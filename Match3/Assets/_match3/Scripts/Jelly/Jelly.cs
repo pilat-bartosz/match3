@@ -5,6 +5,5 @@ namespace _match3.Jelly
     public struct Jelly : IComponentData
     {
         public int type;
-        public float spriteSize;
     }
 }

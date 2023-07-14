@@ -5,7 +5,7 @@ namespace _match3.Jelly.Animations
     /// <summary>
     /// Readonly data struct
     /// </summary>
-    public struct JellyAnimationData : IComponentData
+    public struct ScaleAnimationData : IComponentData
     {
         public float animationSpeed;
         public float minScale;
@@ -13,13 +13,8 @@ namespace _match3.Jelly.Animations
     }
     
     
-    public struct JellyAnimation : IComponentData
+    public struct ScaleAnimationTime : IComponentData
     {
         public float currentAnimationTime;
-    }
-    
-    public struct IsAnimated : IComponentData, IEnableableComponent
-    {
-        
     }
 }

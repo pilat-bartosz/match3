@@ -1,3 +1,4 @@
+using _match3.Selection;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -6,7 +7,7 @@ using Unity.Transforms;
 
 namespace _match3.Jelly.Animations
 {
-    public partial struct JellyAnimationSystem : ISystem
+    public partial struct ScaleAnimationSystem : ISystem
     {
         private EntityQuery _resetAnimationTimeQuery;
 
@@ -14,12 +15,14 @@ namespace _match3.Jelly.Animations
         public void OnCreate(ref SystemState state)
         {
             //TODO remove query when .WithNone<T>().WithDisabled<T>() will be fixed by Unity
+            //TODO is IsSelected wrong component?
+            //TODO should there be a mirror components like i.e. IsAnimated for sake of modularity?
             _resetAnimationTimeQuery = SystemAPI.QueryBuilder()
-                .WithAll<JellyAnimation>()
-                .WithDisabled<IsAnimated>()
+                .WithAll<ScaleAnimationTime>()
+                .WithDisabled<IsSelected>()
                 .Build();
             _resetAnimationTimeQuery.AddOrderVersionFilter();
-            _resetAnimationTimeQuery.AddChangedVersionFilter(ComponentType.ReadOnly<IsAnimated>());
+            _resetAnimationTimeQuery.AddChangedVersionFilter(ComponentType.ReadOnly<IsSelected>());
         }
 
         [BurstCompile]
@@ -44,37 +47,37 @@ namespace _match3.Jelly.Animations
     }
 
     [BurstCompile]
-    [WithAll(typeof(IsAnimated))]
+    [WithAll(typeof(IsSelected))]
     public partial struct ProgressAnimationTimeJob : IJobEntity
     {
         [ReadOnly] public float deltaTime;
 
-        private void Execute(ref JellyAnimation animation, in JellyAnimationData data)
+        private void Execute(ref ScaleAnimationTime animationTime, in ScaleAnimationData data)
         {
-            animation.currentAnimationTime =
-                (animation.currentAnimationTime + data.animationSpeed * deltaTime) % 1;
+            animationTime.currentAnimationTime =
+                (animationTime.currentAnimationTime + data.animationSpeed * deltaTime) % 1;
         }
     }
 
     [BurstCompile]
     public partial struct ResetAnimationTimeJob : IJobEntity
     {
-        private void Execute(ref JellyAnimation animation)
+        private void Execute(ref ScaleAnimationTime animationTime)
         {
-            animation.currentAnimationTime = 0;
+            animationTime.currentAnimationTime = 0;
         }
     }
 
     [BurstCompile]
-    [WithChangeFilter(typeof(JellyAnimation))]
+    [WithChangeFilter(typeof(ScaleAnimationTime))]
     public partial struct AnimationJob : IJobEntity
     {
-        private void Execute(ref LocalTransform transform, in JellyAnimation animation, in JellyAnimationData data)
+        private void Execute(ref LocalTransform transform, in ScaleAnimationTime animationTime, in ScaleAnimationData data)
         {
             transform.Scale = math.lerp(
                 data.minScale,
                 data.maxScale,
-                math.sin(animation.currentAnimationTime * math.PI)
+                math.sin(animationTime.currentAnimationTime * math.PI)
             );
         }
     }

@@ -1,6 +1,7 @@
 using _match3.Grid;
 using _match3.Jelly.Animations;
 using _match3.Jelly.Movement;
+using _match3.Selection;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
@@ -31,11 +32,14 @@ namespace _match3.Jelly
                 //Core
                 AddComponent(entity, new Jelly
                 {
-                    type = authoring.type,
+                    type = authoring.type
+                });
+                
+                //Visuals
+                AddComponent(entity, new SpriteData
+                {
                     spriteSize = authoring.spriteSize
                 });
-
-                //Visuals
                 AddComponent(entity, new TilingVector2Override
                 {
                     Value = authoring.spriteSize
@@ -56,15 +60,15 @@ namespace _match3.Jelly
                 });
 
                 //Animations
-                AddComponent(entity, new JellyAnimation());
-                AddComponent(entity, new JellyAnimationData
+                AddComponent(entity, new ScaleAnimationTime());
+                AddComponent(entity, new ScaleAnimationData
                 {
                     animationSpeed = authoring.animationSpeed,
                     minScale = authoring.minScale,
                     maxScale = authoring.maxScale
                 });
-                AddComponent(entity, new IsAnimated());
-                SetComponentEnabled<IsAnimated>(entity, false);
+                AddComponent(entity, new IsSelected());
+                SetComponentEnabled<IsSelected>(entity, false);
             }
         }
     }
