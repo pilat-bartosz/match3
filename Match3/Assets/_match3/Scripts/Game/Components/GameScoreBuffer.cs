@@ -9,6 +9,7 @@ namespace _match3.Game
         public int score;
     }
     
+    [InternalBufferCapacity(6)]
     public struct GameScoreTargetBuffer : IBufferElementData
     {
         public int score;

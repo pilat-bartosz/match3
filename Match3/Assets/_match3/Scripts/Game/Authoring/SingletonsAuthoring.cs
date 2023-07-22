@@ -35,19 +35,8 @@ namespace _match3.Managers
             {
                 var entity = GetEntity(authoring, TransformUsageFlags.None);
 
-                //Game state
-                AddComponent(entity, new GameStateSingleton
-                {
-                    gameState = GameState.Menu
-                });
-
-                AddComponent(entity, new NextGameState
-                {
-                    nextGameState = GameState.Menu
-                });
-
-                AddComponent(entity, new SwitchGameState());
-                SetComponentEnabled<SwitchGameState>(entity, false);
+                //Initial game state
+                AddComponent(entity, new MenuState());
 
                 //Random
                 AddComponent(entity, new RandomSingleton

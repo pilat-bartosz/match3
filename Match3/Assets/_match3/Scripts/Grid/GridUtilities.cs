@@ -28,7 +28,7 @@ namespace _match3.Grid
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int2 GetGridPositionFromPosition(float2 position, in GridSettingsSingleton gridSettings)
+        public static int2 WorldToGridPosition(float2 position, in GridSettingsSingleton gridSettings)
         {
             var pos = new float2
             {

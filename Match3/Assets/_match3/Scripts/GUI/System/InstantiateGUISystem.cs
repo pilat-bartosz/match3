@@ -12,7 +12,7 @@ namespace _match3.GUI
         protected override void OnCreate()
         {
             _instantiateQuery = SystemAPI.QueryBuilder()
-                .WithAll<GUIPrefab, GameStateSingleton>()
+                .WithAll<GUIPrefab>()
                 .WithNone<GUIManager, GUIReference>()
                 .Build();
 
@@ -23,13 +23,11 @@ namespace _match3.GUI
         {
             var guiPrefabEntity = _instantiateQuery.GetSingletonEntity();
             var guiPrefab = _instantiateQuery.GetSingleton<GUIPrefab>();
-            var gameStateSingleton = _instantiateQuery.GetSingleton<GameStateSingleton>();
 
             var guiObject = Object.Instantiate(guiPrefab.guiPrefab);
             var guiManager = guiObject.GetComponent<GUIManager>();
             
             guiManager.Initialize();
-            guiManager.SwitchToUI(gameStateSingleton.gameState);
             
             EntityManager.AddComponentObject(guiPrefabEntity, guiManager);
             EntityManager.AddComponentObject(guiPrefabEntity, new GUIReference

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using _match3.Game;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
@@ -9,6 +8,14 @@ namespace _match3.GUI
 {
     public class GUIManager : MonoBehaviour, IComponentData
     {
+        public enum GUIState
+        {
+            Uninitialized,
+            Menu,
+            Game,
+            Congratulations,
+        }
+
         [Header("Menu")]
         [SerializeField] private GameObject _menuUI;
         [SerializeField] private List<Button> _menuButtons;
@@ -26,10 +33,15 @@ namespace _match3.GUI
         [Header("Congratulations")]
         [SerializeField] private GameObject _congratulationsUI;
 
-        public void Initialize()
+        private GUIState internalUIState;
+
+        public void Initialize(GUIState firstState = GUIState.Uninitialized)
         {
             FixCanvasScaleToFitResolution();
 
+            internalUIState = firstState;
+            SwitchToUI(firstState);
+            
             //Initialize Menu
             for (var i = 0; i < _menuButtons.Count; i++)
             {
@@ -45,10 +57,7 @@ namespace _match3.GUI
 
             //Initialize Game gui
             _returnToMenuButton.onClick.RemoveAllListeners();
-            _returnToMenuButton.onClick.AddListener(() =>
-            {
-                WasReturnToMenuButtonClicked = true;
-            });
+            _returnToMenuButton.onClick.AddListener(() => { WasReturnToMenuButtonClicked = true; });
             WasReturnToMenuButtonClicked = false;
         }
 
@@ -62,11 +71,19 @@ namespace _match3.GUI
             canvas.planeDistance = 11f;
         }
 
-        public void SwitchToUI(GameState uiState, bool activeState = true)
+        public void UpdateUI(GUIState newState, bool force = false)
         {
-            _menuUI.SetActive(activeState && uiState == GameState.Menu);
-            _gameUI.SetActive(activeState && uiState == GameState.Game);
-            _congratulationsUI.SetActive(activeState && uiState == GameState.Congratulations);
+            if(internalUIState == newState && !force) return;
+
+            SwitchToUI(newState);
+            internalUIState = newState;
+        }
+
+        private void SwitchToUI(GUIState uiState)
+        {
+            _menuUI.SetActive(uiState == GUIState.Menu);
+            _gameUI.SetActive(uiState == GUIState.Game);
+            _congratulationsUI.SetActive(uiState == GUIState.Congratulations);
         }
 
         public void UpdateScore(NativeArray<int> scores, NativeArray<int> maxScore)

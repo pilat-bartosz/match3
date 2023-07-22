@@ -1,10 +1,8 @@
 using _match3.Grid;
-using _match3.Jelly.Movement;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Mathematics;
-using Unity.Transforms;
+using Unity.Jobs;
 
 namespace _match3.Game
 {
@@ -12,33 +10,30 @@ namespace _match3.Game
     public partial struct OnGameStartSystem : ISystem
     {
         private EntityQuery _onGameStartQuery;
-        private EntityQuery _jellyQuery;
 
         [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
-            _jellyQuery = SystemAPI.QueryBuilder()
-                .WithAll<Jelly.Jelly>()
-                .Build();
-
             _onGameStartQuery = SystemAPI.QueryBuilder()
-                .WithAll<GameStateSingleton, GridSettingsSingleton, JellyPrefabSingleton>()
+                .WithAll<GameState,
+                    GridSettingsSingleton, 
+                    JellyPrefabSingleton>()
                 .WithAllRW<GridBuffer, RandomSingleton>()
                 .Build();
-            _onGameStartQuery.AddChangedVersionFilter(ComponentType.ReadOnly<GameStateSingleton>());
+            _onGameStartQuery.AddChangedVersionFilter(ComponentType.ReadOnly<GameState>());
 
             state.RequireForUpdate(_onGameStartQuery);
+            state.RequireForUpdate<EndInitializationEntityCommandBufferSystem.Singleton>();
+            state.RequireForUpdate<GameState>();
         }
 
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            if (_onGameStartQuery.IsEmpty) return;
-
-            var gameState = _onGameStartQuery.GetSingleton<GameStateSingleton>();
-
-            //OnGameStart enter
-            if (gameState.gameState != GameState.Game) return;
+            //on game start
+            var gameState = SystemAPI.GetSingletonRW<GameState>();
+            if (gameState.ValueRO.subState != GameState.GameSubState.OnEnter) return;
+            gameState.ValueRW.subState = GameState.GameSubState.Game;
 
             //get all the data needed
             var jellyPrefab = _onGameStartQuery.GetSingleton<JellyPrefabSingleton>().jellyPrefab;
@@ -48,65 +43,45 @@ namespace _match3.Game
 
             var random = _onGameStartQuery.GetSingletonRW<RandomSingleton>();
 
-            //clear grid from jellies
-            state.EntityManager.DestroyEntity(_jellyQuery);
-            //there is no need to clear grid as it will be overriden anyway
+
+            var singleton = SystemAPI.GetSingleton<EndInitializationEntityCommandBufferSystem.Singleton>();
+            var ecb = singleton.CreateCommandBuffer(state.WorldUnmanaged);
 
             //spawn jellies
             var startPosition = gridSettings.startPosition;
             var gap = gridSettings.gap;
             var jellyTypeCount = gridSettings.jellyTypeCount;
 
+            var jelliesCount = gridSettings.size.x * gridSettings.size.y;
             var jelliesArray = state.EntityManager.Instantiate(
                 jellyPrefab,
-                gridSettings.size.x * gridSettings.size.y,
-                Allocator.Temp
+                jelliesCount,
+                Allocator.TempJob
             );
 
-            for (var x = 0; x < gridSettings.size.x; x++)
+            var types = new NativeArray<int>(jelliesCount, Allocator.TempJob);
+            var jobHandle = new GenerateRandomTypes
             {
-                for (var y = 0; y < gridSettings.size.y; y++)
-                {
-                    var entity = jelliesArray[y * gridSettings.size.x + x];
+                jellyTypeCount = jellyTypeCount,
+                random = random,
+                types = types
+            }.Schedule(jelliesCount, state.Dependency);
 
-                    //set type
-                    var type = random.ValueRW.random.NextInt(0, jellyTypeCount);
-                    state.EntityManager.SetComponentData(entity, new Jelly.Jelly
-                    {
-                        type = type
-                    });
+            jobHandle = new FillJelliesJob
+            {
+                startPosition = startPosition,
+                gap = gap,
+                gridSettings = gridSettings,
+                ecb = ecb.AsParallelWriter(),
+                jelliesArray = jelliesArray,
+                types = types,
+                grid = grid
+            }.Schedule(jelliesCount, jobHandle);
 
-                    //teleport to
-                    var newPosition = new float3(
-                        startPosition.x + (gap.x * x),
-                        startPosition.y - (gap.y * y),
-                        0f
-                    );
-                    state.EntityManager.SetComponentData(entity, new Destination
-                    {
-                        position = newPosition
-                    });
-                    newPosition += new float3(0f,gap.y * 2, 0f);
-                    state.EntityManager.SetComponentData(entity, new LocalTransform
-                    {
-                        Position = newPosition,
-                        Rotation = quaternion.identity,
-                        Scale = 0.75f
-                    });
+            jobHandle = types.Dispose(jobHandle);
+            jobHandle = jelliesArray.Dispose(jobHandle);
 
-                    //setup grid position
-                    state.EntityManager.SetComponentData(entity, new GridPosition
-                    {
-                        position = new int2(x, y)
-                    });
-                    //fill the grid
-                    grid[gridSettings.GetIndexFromSettings(x,y)] = new GridBuffer
-                    {
-                        type = type,
-                        entity = entity
-                    };
-                }
-            }
+            state.Dependency = jobHandle;
         }
 
         [BurstCompile]
