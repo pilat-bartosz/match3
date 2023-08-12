@@ -47,7 +47,7 @@ PlayerSettings:
   defaultScreenWidthWeb: 960
   defaultScreenHeightWeb: 600
   m_StereoRenderingPath: 0
-  m_ActiveColorSpace: 0
+  m_ActiveColorSpace: 1
   m_SpriteBatchVertexThreshold: 300
   m_MTRendering: 1
   mipStripping: 0
@@ -155,7 +155,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: com.Krajca.JellyMatch
-    Standalone: unity.Krajca.JellyMatch
+    Standalone: com.Krajca.JellyMatch
     Tizen: com.Krajca.JellyMatch
     iPhone: com.Krajca.JellyMatch
     tvOS: com.Krajca.JellyMatch
@@ -288,11 +288,14 @@ PlayerSettings:
       m_Height: 128
       m_Kind: 0
   m_BuildTargetPlatformIcons: []
-  m_BuildTargetBatching: []
+  m_BuildTargetBatching:
+  - m_BuildTarget: Standalone
+    m_StaticBatching: 0
+    m_DynamicBatching: 1
   m_BuildTargetShaderSettings: []
   m_BuildTargetGraphicsJobs:
   - m_BuildTarget: WindowsStandaloneSupport
-    m_GraphicsJobs: 0
+    m_GraphicsJobs: 1
   - m_BuildTarget: MacStandaloneSupport
     m_GraphicsJobs: 0
   - m_BuildTarget: LinuxStandaloneSupport
@@ -636,12 +639,13 @@ PlayerSettings:
   webGLMemoryGeometricGrowthStep: 0.2
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    Standalone: UNITY_PHYSICS_DISABLE_INTEGRITY_CHECKS
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
     Android: 0
-    Standalone: 0
+    Standalone: 1
     WebGL: 1
     WebPlayer: 0
   il2cppCompilerConfiguration: {}
