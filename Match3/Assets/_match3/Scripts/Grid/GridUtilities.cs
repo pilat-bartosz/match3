@@ -3,7 +3,7 @@ using Unity.Mathematics;
 
 namespace _match3.Grid
 {
-    public static class GridUtilities
+    public static partial class GridUtilities
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool CheckBoundaries(this GridSettingsSingleton gridSettings, int2 gridPosition)
@@ -14,21 +14,8 @@ namespace _match3.Grid
                    && gridPosition.y < gridSettings.size.y;
         }
 
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetIndexFromSettings(this GridSettingsSingleton gridSettings, int2 gridPosition)
-        {
-            return GetIndexFromSettings(gridSettings, gridPosition.x, gridPosition.y);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetIndexFromSettings(this GridSettingsSingleton gridSettings, int x, int y)
-        {
-            return y * gridSettings.size.x + x;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int2 WorldToGridPosition(float2 position, in GridSettingsSingleton gridSettings)
+        public static int2 WorldToGridPosition(this GridSettingsSingleton gridSettings, float2 position)
         {
             var pos = new float2
             {
@@ -41,18 +28,42 @@ namespace _match3.Grid
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float3 GetPositionFromGrid(int2 gridPosition, in GridSettingsSingleton gridSettings)
+        public static float3 GridToWorldPosition(this GridSettingsSingleton gridSettings, int2 gridPosition)
         {
-            return GetPositionFromGrid(gridPosition.x, gridPosition.y, gridSettings);
+            return GridToWorldPosition(gridSettings, gridPosition.x, gridPosition.y);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float3 GetPositionFromGrid(int x, int y, in GridSettingsSingleton gridSettings)
+        public static float3 GridToWorldPosition(this GridSettingsSingleton gridSettings, int x, int y)
         {
             return new float3(
                 gridSettings.startPosition.x + gridSettings.gap.x * x,
                 gridSettings.startPosition.y - gridSettings.gap.y * y,
                 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int2 GetGridPositionFromIndex(this GridSettingsSingleton gridSettings, int index)
+        {
+            var y = (int)math.floor((float)index / gridSettings.size.x);
+            return new int2(
+                index - (y * gridSettings.size.x),
+                y
+            );
+        }
+
+        //grid position -> index
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int GetIndexFromGridPosition(this GridSettingsSingleton gridSettings, int2 gridPosition)
+        {
+            return GetIndexFromGridPosition(gridSettings, gridPosition.x, gridPosition.y);
+        }
+
+        //index -> grid position 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int GetIndexFromGridPosition(this GridSettingsSingleton gridSettings, int x, int y)
+        {
+            return y * gridSettings.size.x + x;
         }
     }
 }

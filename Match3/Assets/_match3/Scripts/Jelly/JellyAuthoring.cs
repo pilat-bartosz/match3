@@ -53,11 +53,13 @@ namespace _match3.Jelly
                 AddComponent(entity, new GridPosition());
 
                 //Movement
-                AddComponent(entity, new Destination());
+                AddBuffer<Destination>(entity);
                 AddComponent(entity, new MovementSpeed
                 {
                     Value = authoring.movementSpeed
                 });
+                AddComponent(entity, new IsMoving());
+                SetComponentEnabled<IsMoving>(entity, false);
 
                 //Animations
                 AddComponent(entity, new ScaleAnimationTime());

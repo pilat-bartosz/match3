@@ -16,9 +16,9 @@ namespace _match3.Game
         {
             _onGameStartQuery = SystemAPI.QueryBuilder()
                 .WithAll<GameState,
-                    GridSettingsSingleton, 
                     JellyPrefabSingleton>()
-                .WithAllRW<GridBuffer, RandomSingleton>()
+                .WithAllRW<RandomSingleton>()
+                .WithAspect<GridAspect>()
                 .Build();
             _onGameStartQuery.AddChangedVersionFilter(ComponentType.ReadOnly<GameState>());
 
@@ -39,7 +39,8 @@ namespace _match3.Game
             var jellyPrefab = _onGameStartQuery.GetSingleton<JellyPrefabSingleton>().jellyPrefab;
 
             var gridSettings = _onGameStartQuery.GetSingleton<GridSettingsSingleton>();
-            var grid = _onGameStartQuery.GetSingletonBuffer<GridBuffer>();
+            var gridEntities = _onGameStartQuery.GetSingletonBuffer<GridEntity>();
+            var gridCells = _onGameStartQuery.GetSingletonBuffer<GridCell>();
 
             var random = _onGameStartQuery.GetSingletonRW<RandomSingleton>();
 
@@ -75,7 +76,8 @@ namespace _match3.Game
                 ecb = ecb.AsParallelWriter(),
                 jelliesArray = jelliesArray,
                 types = types,
-                grid = grid
+                gridEntities = gridEntities,
+                gridCells = gridCells
             }.Schedule(jelliesCount, jobHandle);
 
             jobHandle = types.Dispose(jobHandle);

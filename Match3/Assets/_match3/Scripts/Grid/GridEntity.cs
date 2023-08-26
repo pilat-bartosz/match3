@@ -4,9 +4,14 @@ using Unity.Mathematics;
 namespace _match3.Grid
 {
     [InternalBufferCapacity(0)]
-    public struct GridBuffer : IBufferElementData
+    public struct GridEntity : IBufferElementData
     {
         public Entity entity;
+    }
+    
+    [InternalBufferCapacity(0)]
+    public struct GridCell : IBufferElementData
+    {
         public int type;
     }
     

@@ -17,7 +17,8 @@ namespace _match3.Game
         [ReadOnly] public NativeArray<int> types;
 
         public NativeArray<Entity> jelliesArray;
-        public DynamicBuffer<GridBuffer> grid;
+        public DynamicBuffer<GridEntity> gridEntities;
+        public DynamicBuffer<GridCell> gridCells;
 
         public EntityCommandBuffer.ParallelWriter ecb;
 
@@ -42,7 +43,7 @@ namespace _match3.Game
                 startPosition.y - (gap.y * y),
                 0f
             );
-            ecb.SetComponent(index, entity, new Destination
+            ecb.AppendToBuffer(index, entity,new Destination
             {
                 position = newPosition
             });
@@ -60,10 +61,13 @@ namespace _match3.Game
                 position = new int2(x, y)
             });
             //fill the grid
-            grid[index] = new GridBuffer
+            gridEntities[index] = new GridEntity
             {
-                type = type,
                 entity = entity
+            };
+            gridCells[index] = new GridCell
+            {
+                type = type
             };
         }
     }

@@ -10,6 +10,8 @@ namespace _match3.Jelly.Animations
     public partial struct ScaleAnimationSystem : ISystem
     {
         private EntityQuery _resetAnimationTimeQuery;
+        
+        private EntityQuery _animateQuery;
 
         [BurstCompile]
         public void OnCreate(ref SystemState state)
@@ -23,6 +25,13 @@ namespace _match3.Jelly.Animations
                 .Build();
             _resetAnimationTimeQuery.AddOrderVersionFilter();
             _resetAnimationTimeQuery.AddChangedVersionFilter(ComponentType.ReadOnly<IsSelected>());
+
+            _animateQuery = SystemAPI.QueryBuilder()
+                .WithAll<ScaleAnimationTime, ScaleAnimationData>()
+                .WithAllRW<LocalTransform>()
+                .Build();
+            _animateQuery.AddOrderVersionFilter();
+            _animateQuery.AddChangedVersionFilter(ComponentType.ReadOnly<ScaleAnimationTime>());
         }
 
         [BurstCompile]
@@ -35,7 +44,7 @@ namespace _match3.Jelly.Animations
 
             jobHande = new ResetAnimationTimeJob().Schedule(_resetAnimationTimeQuery, jobHande);
 
-            jobHande = new AnimationJob().Schedule(jobHande);
+            jobHande = new AnimationJob().Schedule(_animateQuery, jobHande);
 
             state.Dependency = jobHande;
         }
@@ -69,7 +78,6 @@ namespace _match3.Jelly.Animations
     }
 
     [BurstCompile]
-    [WithChangeFilter(typeof(ScaleAnimationTime))]
     public partial struct AnimationJob : IJobEntity
     {
         private void Execute(ref LocalTransform transform, in ScaleAnimationTime animationTime, in ScaleAnimationData data)

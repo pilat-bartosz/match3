@@ -2,6 +2,7 @@ using _match3.Game;
 using _match3.Grid;
 using _match3.GUI;
 using _match3.Selection;
+using _match3.Switching;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -70,7 +71,6 @@ namespace _match3.Managers
                     scoreTargetBuffer.Add(new GameScoreTargetBuffer());
                 }
                 
-                
                 //Grid
                 AddComponent(entity, new GridSettingsSingleton
                 {
@@ -79,13 +79,17 @@ namespace _match3.Managers
                     gap = authoring.gap,
                     jellyTypeCount = authoring.jellyTypeCount
                 });
-                var grid = AddBuffer<GridBuffer>(entity);
-                var gridArray = new NativeArray<GridBuffer>(
+                var grid = AddBuffer<GridEntity>(entity);
+                var gridArray = new NativeArray<GridEntity>(
                     authoring.size.x * authoring.size.y, 
                     Allocator.Temp);
                 grid.AddRange(gridArray);
                 
-
+                var gridCells = AddBuffer<GridCell>(entity);
+                var gridCellArray = new NativeArray<GridCell>(
+                    authoring.size.x * authoring.size.y, 
+                    Allocator.Temp);
+                gridCells.AddRange(gridCellArray);
             }
         }
     }

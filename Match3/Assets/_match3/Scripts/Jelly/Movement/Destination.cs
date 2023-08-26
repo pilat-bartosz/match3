@@ -3,7 +3,8 @@ using Unity.Mathematics;
 
 namespace _match3.Jelly.Movement
 {
-    public struct Destination : IComponentData
+    [InternalBufferCapacity(5)]
+    public struct Destination : IBufferElementData
     {
         public float3 position;
     }
@@ -11,5 +12,9 @@ namespace _match3.Jelly.Movement
     public struct MovementSpeed : IComponentData
     {
         public float Value;
+    }
+    
+    public struct IsMoving : IComponentData, IEnableableComponent
+    {
     }
 }
